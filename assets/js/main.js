@@ -1,3 +1,5 @@
+const body = document.querySelector("body");
+
 let data = [
   {
     url:
@@ -24,15 +26,15 @@ let data = [
     url:
       "https://cdn.playbuzz.com/cdn//f063e8fe-ad57-485e-8211-ed2ee0d9a205/467a486b-be3a-4183-90ed-dd6867d5852d.jpg",
     question: "True or False: Iceland is covered in ice.",
-    choice: [true, false],
-    answer: false,
+    choice: [true, "false"],
+    answer: "false",
   },
   {
     url:
       "https://cdn.playbuzz.com/cdn//f063e8fe-ad57-485e-8211-ed2ee0d9a205/ecf8af7b-8541-4572-b63b-ee7d7f9fc4cc.jpg",
     question: "The United Kingdom is comprised of how many countries?",
-    choice: [1, 2, 3, 4],
-    answer: 4,
+    choice: [1, 2, 3, "4"],
+    answer: "4",
   },
   {
     url:
@@ -71,39 +73,134 @@ let data = [
   },
 ];
 
-const inputs = document.querySelectorAll("input");
-const h5 = document.querySelector("h5");
+const section = document.createElement("section");
+const section1 = document.createElement("section");
+body.appendChild(section);
+body.appendChild(section1);
 let counter = 0;
+const quizTemplateGenerator = () => {
+  section.innerHTML = ` <div class="container mt-5">
+<div id="content-box" class="d-flex justify-content-center row">
+  <div class="col-md-10 col-lg-10">
+    <div class="border">
+      <div class="question bg-white p-3 border-bottom">
+        <div
+          class="d-flex flex-row justify-content-between align-items-center mcq"
+        >
+          <h4>Quiz</h4>
+          <span id="mini-counter"></span>
+        </div>
+      </div>
+      
+<div id="choiceContainer" class="question bg-white p-3 border-bottom">
+<div  id="questionTitle class="d-flex flex-row align-items-center question-title">
+<h3 class="text-danger">Q.</h3>
+<h5 id="question" class="mt-1 ml-2">
+
+</h5>
+
+</div>
+     
+      <div id="deleterDiv">
+      </div>
+      </div>
+       <div
+        class="d-flex flex-row justify-content-between align-items-center p-3 bg-white"
+      >
+        <button id="previous"
+          class="btn btn-primary d-flex align-items-center btn-danger"
+          type="button"
+        >
+          <i class="fa fa-angle-left mt-1 mr-1"></i>&nbsp;previous</button
+        ><button id="next"
+          class="btn btn-primary border-success align-items-center btn-success"
+          type="button"
+        >
+          Next<i class="fa fa-angle-right ml-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>`;
+};
+
+section1.innerHTML = ` <script type="text/javascript" src="//rf.revolvermaps.com/0/0/6.js?i=5x9abe6nvln&amp;m=7&amp;c=e63100&amp;cr1=ffffff&amp;f=arial&amp;l=0&amp;bv=90&amp;lx=-420&amp;ly=420&amp;hi=20&amp;he=7&amp;hc=a8ddff&amp;rs=80" async="async"></script>`;
+
+quizTemplateGenerator();
+
+const inputs = document.querySelectorAll("input");
+const h6 = document.querySelector("h6");
+const question = document.getElementById("question");
+const questionTitle = document.getElementById("questionTitle");
+const choiceContainer = document.getElementById("choiceContainer");
+const questionDiv = document.createElement("div");
+const deleterDiv = document.getElementById("deleterDiv");
+const miniCounter = document.getElementById("mini-counter");
+questionDiv.classList.add("question", "bg-white", "p-3", "border-bottom");
+
 class Quiz {
   constructor(question, choice, answer) {
     this.question = question;
     this.choice = choice;
     this.answer = answer;
   }
-
-  check() {}
 }
+console.log(inputs);
 
-const quizGenerator = () => {
+const quizDataGenerator = () => {
   const quiz = new Quiz(
     data[counter].question,
     data[counter].choice,
     data[counter].answer
   );
+
+  question.innerText = `${data[counter].question}`;
+  deleterDiv.innerHTML = " ";
+  data[counter].choice.forEach((elt) => {
+    const choiceContent = document.createElement("div");
+    choiceContent.classList.add("ans", "ml-2");
+    deleterDiv.appendChild(choiceContent);
+    const choiceLabel = document.createElement("label");
+    choiceLabel.classList.add("radio");
+    choiceContent.appendChild(choiceLabel);
+    const choiceInput = document.createElement("input");
+    choiceInput.setAttribute("type", "radio");
+    choiceInput.setAttribute("name", "choice");
+    choiceInput.value = elt;
+    choiceLabel.appendChild(choiceInput);
+    const choiceTxt = document.createElement("span");
+    choiceTxt.innerText = elt;
+    choiceLabel.appendChild(choiceTxt);
+
+    choiceInput.addEventListener("change", () => {
+      if (choiceInput.checked && choiceInput.value === data[counter].answer) {
+        choiceTxt.classList.add("is-correct-display");
+        console.log("correct answer");
+        console.log(choiceInput.value);
+      }
+    });
+  });
+
   console.log(quiz);
 };
 
-quizGenerator();
-h5.innerHTML = `${counter}`;
+quizDataGenerator();
+h6.innerHTML = `${counter}`;
+miniCounter.innerHTML = `${counter + 1} of 10`;
 
-inputs[0].addEventListener("click", () => {
+previous.addEventListener("click", () => {
   counter--;
-  h5.innerHTML = `${counter}`;
-  quizGenerator();
+  h6.innerHTML = `${counter}`;
+  miniCounter.innerHTML = `${counter + 1} of 10`;
+  quizDataGenerator();
 });
 
-inputs[1].addEventListener("click", () => {
+next.addEventListener("click", () => {
   counter++;
-  h5.innerHTML = `${counter}`;
-  quizGenerator();
+  h6.innerHTML = `${counter}`;
+  miniCounter.innerHTML = `${counter + 1} of 10`;
+  quizDataGenerator();
 });
+
+//========================= EARTH
